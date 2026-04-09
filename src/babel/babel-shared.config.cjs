@@ -49,9 +49,18 @@ const babelPlugins = [
     { corejs : false, helpers : true, regenerator : true } // re corejs, see polyfill plugin below
   ],
   '@babel/plugin-syntax-import-assertions',
-  'babel-plugin-transform-import-meta',
   'inline-json-import'
 ]
+
+// Only lower `import.meta.url` when babel itself is lowering modules to CJS
+// (i.e. the Jest test transpile of a non-module package). In ESM output it is
+// native, and in rollup-produced CJS output rollup handles it — in both of
+// those cases the transform would inject a `require('url')...__filename`
+// expression that either crashes an ESM bundle or collides with user-declared
+// `__filename` locals in a CJS bundle.
+if (presetEnvOptions.modules === 'commonjs') {
+  babelPlugins.push('babel-plugin-transform-import-meta')
+}
 
 if (process.env.NODE_ENV === 'test') {
   babelPlugins.push([
