@@ -1,0 +1,9 @@
+Test git rev: 108cffe321b49bd88fa5fe451c8a3d3e570272ef
+throw expression default parameter: PASSED
+throw expression || (throw condition): PASSED
+throw expression || (no throw condition): PASSED
+appends 'src/file-header.txt': PASSED
+TypeScript transpilation: PASSED
+TypeScript types stripped: PASSED
+TypeScript output execution: PASSED
+Mixed JS/TS imports: PASSED
