@@ -21,3 +21,7 @@ npx rollup $(npm explore @sdlcforge/packjs -- pwd)/dist/rollup/rollup.config.mjs
 Unfortunately, it is currently necessary to include necessary polyfills for target engines manually. This is the only way to get optimized output.
 
 After extensive experimentation with different settings, it appears that Babel cannot really produce optimized polyfills. Even with 'usage' based configurations, it may include polyfills that are in fact not used and the polyfill logic also seems to ignore the `targets` setting (e.g., even when the target platform supports a function natively, Babel will still include the polyfill for it). See the [polyfill configuration notes in DEVELOPER_NOTES.md](./DEVELOPER_NOTES#polyfill-configuration-notes) for further details.
+
+## Releasing
+
+Maintainers: see [RELEASING.md](./RELEASING.md) for the release procedure.
