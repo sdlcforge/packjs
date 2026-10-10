@@ -33,7 +33,7 @@ $(TEST_REPORT) $(TEST_PASS_MARKER) &: package.json $(ALL_JS_FILES_SRC)
 test: build $(TEST_REPORT) $(TEST_PASS_MARKER)
 
 
-ESLINT:=npx eslint
+ESLINT:=bunx eslint
 LINT_REPORT:=$(QA)/lint.txt
 LINT_PASS_MARKER:=$(QA)/.lint.passed
 PRECIOUS_TARGETS+=$(LINT_REPORT)
