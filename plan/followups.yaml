@@ -1,2 +1,10 @@
 version: 2
-items: []
+items:
+    - title: Lint fails in worktrees under parent config
+      id: 02AP
+      date: "2026-10-10"
+      tags:
+        - type:bug
+        - priority:medium
+        - effort:small
+      text: 'make lint fails inside nested worktrees (e.g. worktrees/task/*). The worktree .eslintrc.js lacks root: true, so ESLint cascades the parent packjs/.eslintrc.js and resolves eslint-plugin-import from both packjs/node_modules and the worktree node_modules, aborting with "ESLint couldn''t determine the plugin ''import'' uniquely". Running the worktree config alone (--no-eslintrc -c .eslintrc.js) passes. Suggested fix: add root: true to the project .eslintrc.js. Observed while converting npm to bun (commit 70bde00); not caused by that change.'
