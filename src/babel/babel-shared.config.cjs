@@ -4,8 +4,14 @@ const join = require('node:path').join
 const findRoot = require('find-root')
 const semver = require('semver')
 
-const npmRoot = findRoot(process.cwd())
-const pkgJSON = JSON.parse(readFileSync(join(npmRoot, 'package.json'), { encoding : 'utf8' }))
+let pkgJSON
+try {
+  const npmRoot = findRoot(process.cwd())
+  pkgJSON = JSON.parse(readFileSync(join(npmRoot, 'package.json'), { encoding : 'utf8' }))
+}
+catch (e) { // no package.json above cwd (or unreadable); fall back to defaults
+  pkgJSON = {}
+}
 
 const NODE_ENV = process.env.NODE_ENV
 
