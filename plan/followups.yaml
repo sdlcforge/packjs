@@ -1,11 +1,2 @@
 version: 2
-items:
-    - title: Babel config tolerate missing package.json
-      id: 3mOr
-      date: "2026-10-10"
-      tags:
-        - type:bug
-        - priority:medium
-        - effort:small
-        - cross-repo/origin:format-and-lint
-      text: 'The shared babel config (babel-shared.config.cjs, which consumers copy into their own dist/babel and load through their ESLint parser setup) calls findRoot on process.cwd() and reads the root package.json at module load. When the working directory has no package.json anywhere above it, loading throws package.json not found in path, so a downstream linter run in a standalone directory (for example linting a loose script) fails every file with a parse error and exits 1 instead of linting. Make the config tolerate a missing package.json: catch the lookup and read failures and fall back to an empty package object so preset-env targets use the defaults (the engines field, when present, should still drive the targets). Add a test that loads the config from a temporary directory with no package.json. Once released, the downstream format-and-lint project will bump its packjs devDependency, re-copy the babel configs and add a regression test for linting without a package.json.'
+items: []
