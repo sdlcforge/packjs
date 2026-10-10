@@ -216,3 +216,33 @@ loadConfigFile(configFile, { input : mixedTestInput, output : mixedTestOutput })
       }
     })
   })
+
+// TEST 9: shared babel config loads when there is no package.json above cwd
+{
+  const { execFileSync } = require('node:child_process')
+  const { mkdtempSync, rmSync } = require('node:fs')
+  const os = require('node:os')
+
+  process.stdout.write('Babel config without package.json: ')
+  const tmpDir = mkdtempSync(path.join(os.tmpdir(), 'packjs-no-pkg-'))
+  try {
+    const configPath = path.resolve(__dirname, '..', 'babel', 'babel-shared.config.cjs')
+    const script = 'const c = require(process.argv[1]); process.stdout.write(JSON.stringify(c.babelPresets[0][1]))'
+    const out = execFileSync(process.execPath, ['-e', script, configPath], { cwd : tmpDir, encoding : 'utf8' })
+    const opts = JSON.parse(out)
+    if (opts.targets === undefined && opts.modules === false) {
+      process.stdout.write('PASSED\n')
+    }
+    else {
+      process.stdout.write('FAILED (unexpected options: ' + out + ')\n')
+      process.exit(1)
+    }
+  }
+  catch (e) {
+    process.stdout.write('FAILED (error: ' + e.message + ')\n')
+    process.exit(1)
+  }
+  finally {
+    rmSync(tmpDir, { recursive : true, force : true })
+  }
+}
