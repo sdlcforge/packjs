@@ -1,14 +1,5 @@
 version: 2
 items:
-    - title: RELEASING.md lacks Bun >= 1.4.0 minimum
-      id: xpgB
-      date: "2026-10-11"
-      tags:
-        - type:documentation
-        - priority:medium
-        - effort:small
-        - plan/phase:babel-8-migration
-      text: bun.lock is now lockfileVersion 2 / configVersion 1 and DEVELOPER_NOTES.md requires Bun >= 1.4.0 (Babel 8 parser worker needs worker_threads SHARE_ENV), but RELEASING.md pre-flight only says "bun present" and its build runs `bun install --frozen-lockfile`, which fails on older Bun. Add "Bun >= 1.4.0" to the RELEASING.md pre-flight (lines ~16 and ~56) or link to the DEVELOPER_NOTES "Running tests" note; optionally record the minimum in package.json (packageManager or engines.bun). Agent-authored review finding.
     - title: Strengthen TSX types-stripped test
       id: MCMF
       date: "2026-10-11"
@@ -27,4 +18,9 @@ items:
         - effort:small
         - plan/phase:babel-8-migration
       text: 'bun.lock review notes: @babel/generator 8.0.6 pins pre-release @jridgewell/gen-mapping@0.4.0-beta.0; rollup moved 4.60.1 to 4.64.5 (within ^4.60.1) and adds optional native dependency @napi-rs/lzma-linux-x64-gnu@1.5.1 whose purpose is unverified; many transitive packages refreshed; @rollup/plugin-babel 7.1.0 keeps a nested Babel 7 chain beside Babel 8. Before release run bun install --frozen-lockfile and an audit, confirm the lzma optional dependency is intended, and optionally cap rollup. Agent-authored review finding.'
-closed: []
+closed:
+    - id: xpgB
+      title: RELEASING.md lacks Bun >= 1.4.0 minimum
+      disposition: promoted
+      ref: xpgB
+      date: "2026-10-11"
