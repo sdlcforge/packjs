@@ -1,6 +1,33 @@
 # Releasing @sdlcforge/packjs
 
-This procedure is written primarily for agents (Flow's release skills read it by fixed name) and secondarily for human operators running a release by hand. It was drafted from the project's tooling and git history; items that could not be confirmed are listed under [Open questions](#open-questions).
+Releases are cut with `scripts/release.sh`, the single entry point. Flow's release skills read this file by fixed name. Items that could not be confirmed are listed under [Open questions](#open-questions).
+
+## Running a release
+
+```sh
+scripts/release.sh --dry-run <patch|minor|major|prerelease|X.Y.Z[-pre.N]>   # checks everything, changes nothing
+scripts/release.sh <patch|minor|major|prerelease|X.Y.Z[-pre.N]>             # the real release
+```
+
+Agents never publish, push, or tag. They stop at the dry run; the real release is user-run from an interactive terminal because publishing may need a 2FA one-time code. Never put release actions in the `Makefile` or in `package.json` scripts.
+
+The script:
+
+1. Pre-flight: on `RELEASE_BRANCH` (default `main`), clean tree, remote `REMOTE` (default `origin`) configured, `bun` present, [credentials](#credential-pre-flight) valid, interactive terminal (real release only).
+2. [Bumps](#bump-tool) the version, which runs test and lint through the `preversion` hook.
+3. Runs `make build`. If the build modifies tracked files other than `package.json`, it reverts the bump and aborts.
+4. Commits the bump (message is the bare version) and creates the annotated tag `v<version>`.
+5. Pushes the branch, then the tag.
+6. Publishes with `bun publish --access public --tag <dist-tag>`.
+7. Creates the GitHub release with generated notes (marked prerelease for prerelease versions).
+
+`--dry-run` performs the checks, bump, test, lint and build, runs `bun publish --dry-run`, then reverts the bump. It never commits, tags, pushes, publishes, or creates a release. Credential failures are warnings in a dry run and hard failures otherwise.
+
+Resume: if a release stopped part-way, re-run with the explicit version (for example `scripts/release.sh 1.0.0-beta.3`) from the tagged commit. Steps whose result already exists (local tag, remote tag, published version, GitHub release) are skipped.
+
+### Dist-tag
+
+Stable versions publish under `latest`. A prerelease publishes under its first identifier, so `1.0.0-beta.3` gets `beta` and `latest` is not moved. Override with the `DIST_TAG` environment variable.
 
 ## Manifests
 
@@ -8,19 +35,17 @@ This procedure is written primarily for agents (Flow's release skills read it by
 
 ## Bump tool
 
-The release procedure takes `<new_version>` as input and bumps with npm:
+The script bumps with npm:
 
 ```sh
-npm version <new_version> --no-git-tag-version
+npm version <bump> --no-git-tag-version
 ```
 
-This sets the `version` field in `package.json`; no manual edit is needed. The `preversion` script in `package.json` (`make test && make lint`) gates the bump, so `npm version` fails if either check fails.
+The script takes the new version (or a `patch`/`minor`/`major`/`prerelease` keyword) as its argument and sets it itself; no manual edit is needed. The `preversion` script in `package.json` (`make test && make lint`) gates the bump, so it fails if either check fails.
 
 npm is used only for `npm version`. Bun has no tag-free equivalent: `bun pm version` always creates a git tag. `bun.lock` does not record the root version, so only `package.json` changes.
 
-Commit the change with the bare version as the message (for example `1.0.0-beta.2`, as in past releases).
-
-The tag is created separately in the [tag push](#tag-push) step.
+The commit message is the bare version (for example `1.0.0-beta.3`, as in past releases). The tag is created by the script in the [tag push](#tag-push) step.
 
 ## Changelog
 
@@ -42,32 +67,25 @@ None. The project keeps no changelog file; no entry is inserted.
 
 ## Tag push
 
-Tags are annotated and sit on the version-bump commit on `main`:
-
-1. `git tag -a v<new_version> -m v<new_version>`
-2. `git push origin refs/tags/v<new_version>`
-
-Push the release commit to `origin` `main` before the tag.
+Tags are annotated (`v<version>`) and sit on the version-bump commit on `main`. The script pushes the release commit to `origin` `main` before the tag.
 
 ## Registries
 
 | Registry | Publish command |
 |---|---|
-| npm (`@sdlcforge/packjs`) | `bun publish --access public` |
+| npm (`@sdlcforge/packjs`) | `bun publish --access public --tag <dist-tag>` |
 
-For a prerelease version (for example `1.0.0-beta.3`), add `--tag beta` so `latest` is not moved. See [Open questions](#open-questions).
-
-If the npm account requires a one-time code on publish, the publish step is user-run: the executor stops before it and the user runs the command in their own terminal.
+See [Dist-tag](#dist-tag) for how `<dist-tag>` is chosen. If the npm account requires a one-time code on publish, the publish step is user-run: bun prompts for it in the user's own terminal.
 
 ## Credential pre-flight
 
-`bun pm whoami`
+`bun pm whoami` (run by the script; `gh auth status` is checked as well)
 
-On failure, the user authenticates in their own terminal (`npm login`, which writes the registry credentials bun reads) and the check is re-run.
+On failure, the user authenticates in their own terminal (`npm login`, which writes the registry credentials bun reads) and the script is re-run.
 
 ## Open questions
 
 - The history shows releases made with an external tool (`liq`: "Merging auto-generated release branch", a QA-files commit and a removal commit around each bump). This repository does not document or configure that tool, so this procedure uses `npm version` for the bump. Confirm the intended tool.
-- Confirm that `bun publish` (and the `--access public` and `--tag beta` choices above) is the actual publish path; no publish workflow, CI configuration, or `publishConfig` exists in the repository.
+- Confirm that `bun publish` (with the `--access public` and dist-tag choices above) is the actual publish path; no publish workflow, CI configuration, or `publishConfig` exists in the repository.
 - Confirm whether `qa/` reports should be committed per release as past releases did, or stay git-ignored.
 - Confirm the release branch convention; the default branch is `main`.
