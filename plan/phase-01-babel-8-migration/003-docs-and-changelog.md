@@ -19,3 +19,7 @@ Hand-author the documentation for the 2.0.0 release. Depends on [task 1](./001-m
 - DEVELOPER_NOTES states Bun >= 1.4.0; line 5 no longer promises Babel 8 will fix polyfills.
 - RELEASING.md no longer says the project keeps no changelog.
 - `git diff --stat` shows only the four docs changed; `make lint` still passes.
+
+## Status
+
+Succeeded, 2026-10-11. Edited `README.md`, `DEVELOPER_NOTES.md`, `RELEASING.md`; created `CHANGELOG.md` (2.0.0 dated 2026-10-11, adjustable at release). Grep/diff checks passed; `make lint` not run (dependencies not installed). No Open questions in `RELEASING.md` were answered, so none changed.
