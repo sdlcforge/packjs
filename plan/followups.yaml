@@ -42,7 +42,7 @@ items:
       date: "2026-10-11"
       tags:
         - type:security
-        - priority:medium
+        - priority:high
         - effort:small
         - plan/phase:babel-8-migration
         - plan/slug:babel-8-migration
