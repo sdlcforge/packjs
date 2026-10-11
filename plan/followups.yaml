@@ -27,3 +27,13 @@ items:
         - plan/phase:babel-8-migration
         - plan/slug:babel-8-migration
       text: bun.lock is now lockfileVersion 2 / configVersion 1 and DEVELOPER_NOTES.md requires Bun >= 1.4.0 (Babel 8 parser worker needs worker_threads SHARE_ENV), but RELEASING.md pre-flight only says "bun present" and its build runs `bun install --frozen-lockfile`, which fails on older Bun. Add "Bun >= 1.4.0" to the RELEASING.md pre-flight (lines ~16 and ~56) or link to the DEVELOPER_NOTES "Running tests" note; optionally record the minimum in package.json (packageManager or engines.bun). Agent-authored review finding.
+    - title: Strengthen TSX types-stripped test
+      id: MCMF
+      date: "2026-10-11"
+      tags:
+        - type:optimization
+        - priority:low
+        - effort:small
+        - plan/phase:babel-8-migration
+        - plan/slug:babel-8-migration
+      text: In src/test/rollup.test.js (~lines 252-292) the TSX "types stripped" check looks for GreetingProps or /:\s*string/ in terser-minified output and passes in nearly every case. Optionally assert the output has no `interface` token, execute the built TSX output with a stub react/jsx-runtime, and add a generic-arrow-in-.tsx case (parses as JSX, a separate path from the .ts regression). Agent-authored review finding.
