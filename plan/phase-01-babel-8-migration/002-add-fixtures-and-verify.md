@@ -21,3 +21,11 @@ Close the coverage gaps the research found (no JSX or JSON-import coverage) and 
 - `make test`, `make lint`, `make qa` exit 0 on a forced rerun.
 - The npm install check exits 0 with only the accepted peer warning.
 - `git status` shows no stray artifacts (tarball, scratch projects).
+
+## Status
+
+- Outcome: succeeded (2026-10-11).
+- Validation: `make test`, `make lint`, `make qa` exit 0 after removing the QA markers; the new JSX, TSX, and import-attribute cases print PASSED alongside all earlier cases. `npm pack` plus `npm install` of the tarball into an empty project exits 0 with a single `@babel/core@8.0.7`.
+- Pack-check warning: the only peer warning is `ERESOLVE overriding peer dependency` for `@rollup/plugin-babel@7.1.0` (peer `@babel/core ^7.0.0`, found `@babel/core@8.0.7`). npm also printed an unrelated `deprecated glob@9.3.5` notice from a transitive dependency.
+- Files: `src/test/rollup.test.js`, `src/test/jsx-features.jsx`, `src/test/tsx-features.tsx`, `src/test/import-attributes.mjs`, `src/test/data.json`, `Makefile`.
+- Notes: `Makefile` gains `TEST_FIXTURES_SRC` as a test prerequisite and ignores `src/test/import-attributes.mjs` in lint (ESLint 8 cannot parse `with` import attributes). In this nested worktree ESLint also needs `ESLINT="bunx eslint --no-eslintrc -c .eslintrc.js"` because the parent `.eslintrc.js` duplicates the `import` plugin.

@@ -9,6 +9,8 @@ TEST_STAGING:=test-staging
 
 ALL_JS_FILES_SRC:=$(shell find $(SRC) -name "*.mjs" -o -name "*.cjs" -o -name "*.js")
 
+TEST_FIXTURES_SRC:=$(shell find $(SRC)/test -name "*.ts" -o -name "*.jsx" -o -name "*.tsx" -o -name "*.json")
+
 CONFIG_FILES_SRC:=$(SRC)/index.cjs $(SRC)/babel/babel-shared.config.cjs $(SRC)/babel/babel.config.cjs $(SRC)/rollup/rollup.config.mjs
 CONFIG_FILES_DIST:=$(patsubst $(SRC)/%, $(DIST)/%, $(CONFIG_FILES_SRC))
 
@@ -22,7 +24,7 @@ TEST_REPORT:=$(QA)/unit-test.txt
 TEST_PASS_MARKER:=$(QA)/.unit-test.passed
 PRECIOUS_TARGETS+=$(TEST_REPORT)
 
-$(TEST_REPORT) $(TEST_PASS_MARKER) &: package.json $(ALL_JS_FILES_SRC)
+$(TEST_REPORT) $(TEST_PASS_MARKER) &: package.json $(ALL_JS_FILES_SRC) $(TEST_FIXTURES_SRC)
 	mkdir -p $(dir $@)
 	echo -n 'Test git rev: ' > $(TEST_REPORT)
 	git rev-parse HEAD >> $(TEST_REPORT)
@@ -40,7 +42,8 @@ PRECIOUS_TARGETS+=$(LINT_REPORT)
 
 LINT_IGNORE_PATTERNS:=--ignore-pattern '$(DIST)/**/*' \
   --ignore-pattern '$(TEST_STAGING)/**/*' \
-  --ignore-pattern src/test/throw-expression.mjs
+  --ignore-pattern src/test/throw-expression.mjs \
+  --ignore-pattern src/test/import-attributes.mjs
 
 $(LINT_REPORT) $(LINT_PASS_MARKER) &: $(ALL_JS_FILES_SRC)
 	mkdir -p $(dir $@)
