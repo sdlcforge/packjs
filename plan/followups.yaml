@@ -17,13 +17,3 @@ items:
         - effort:medium
         - cross-repo/origin:format-and-lint
       text: 'The Babel 8 migration is merged on main (deps, engines ^22.18.0 || >=24.11.0, automatic JSX runtime, fixtures, CHANGELOG, docs). Remaining: cut the release as 2.0.0 (not 1.0.0-beta.3, since 1.0.0 already shipped) by running `scripts/release.sh --dry-run 2.0.0` and then the real `scripts/release.sh 2.0.0` from main in an interactive terminal (RELEASING.md: agents never publish). Confirm the CHANGELOG 2.0.0 date at release. Needs Bun >= 1.4.0. Before releasing, see the open lockfile-review followup. After release, tell the format-and-lint owner that its @sdlcforge/packjs devDependency range must become ^2.0.0 so its ESLint 10 / @babel/eslint-parser 8 dependency bump task can start.'
-    - title: Review refreshed lockfile dependencies
-      id: lK34
-      date: "2026-10-11"
-      tags:
-        - type:security
-        - priority:high
-        - effort:small
-        - plan/phase:babel-8-migration
-        - plan/slug:babel-8-migration
-      text: 'bun.lock review notes: @babel/generator 8.0.6 pins pre-release @jridgewell/gen-mapping@0.4.0-beta.0; rollup moved 4.60.1 to 4.64.5 (within ^4.60.1) and adds optional native dependency @napi-rs/lzma-linux-x64-gnu@1.5.1 whose purpose is unverified; many transitive packages refreshed; @rollup/plugin-babel 7.1.0 keeps a nested Babel 7 chain beside Babel 8. Before release run bun install --frozen-lockfile and an audit, confirm the lzma optional dependency is intended, and optionally cap rollup. Agent-authored review finding.'
