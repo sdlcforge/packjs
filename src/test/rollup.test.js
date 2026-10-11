@@ -14,6 +14,7 @@ const mixedTestInput = path.resolve(__dirname, 'mixed-entry.mjs')
 
 const jsxTestInput = path.resolve(__dirname, 'jsx-features.jsx')
 const tsxTestInput = path.resolve(__dirname, 'tsx-features.tsx')
+const tsxGenericInput = path.resolve(__dirname, 'tsx-generic-arrow.tsx')
 const importAttrTestInput = path.resolve(__dirname, 'import-attributes.mjs')
 
 const testStagingPath = path.resolve(__dirname, '..', '..', 'test-staging')
@@ -24,6 +25,7 @@ const mixedTestOutputPath = path.resolve(testStagingPath, 'mixed-test-output.cjs
 
 const jsxTestOutputPath = path.resolve(testStagingPath, 'jsx-test-output.cjs')
 const tsxTestOutputPath = path.resolve(testStagingPath, 'tsx-test-output.cjs')
+const tsxGenericOutputPath = path.resolve(testStagingPath, 'tsx-generic-test-output.cjs')
 const importAttrTestOutputPath = path.resolve(testStagingPath, 'import-attr-test-output.cjs')
 
 const testOutput = {
@@ -263,7 +265,7 @@ buildOutput(tsxTestInput, tsxTestOutputPath, { external : reactExternal })
   .then(contents => {
     checkJsxOutput('TSX builds with automatic runtime', contents)
     process.stdout.write('TSX types stripped: ')
-    if (contents.includes('GreetingProps') || contents.match(/:\s*string/)) {
+    if (contents.includes('GreetingProps') || /\binterface\b/.test(contents) || contents.match(/:\s*string/)) {
       process.stdout.write('FAILED (TypeScript syntax found in output)\n')
       process.exit(1)
     }
@@ -271,6 +273,20 @@ buildOutput(tsxTestInput, tsxTestOutputPath, { external : reactExternal })
   })
   .catch(e => {
     process.stdout.write('TSX builds with automatic runtime: FAILED (error: ' + e.message + ')\n')
+    process.exit(1)
+  })
+
+buildOutput(tsxGenericInput, tsxGenericOutputPath, { external : reactExternal })
+  .then(contents => {
+    process.stdout.write('TSX generic arrow builds, types stripped: ')
+    if (/<T\s*,?\s*>/.test(contents) || contents.match(/:\s*T\b/)) {
+      process.stdout.write('FAILED (TypeScript syntax found in output)\n')
+      process.exit(1)
+    }
+    process.stdout.write('PASSED\n')
+  })
+  .catch(e => {
+    process.stdout.write('TSX generic arrow builds, types stripped: FAILED (error: ' + e.message + ')\n')
     process.exit(1)
   })
 

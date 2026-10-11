@@ -13,7 +13,7 @@ Agents never publish, push, or tag. They stop at the dry run; the real release i
 
 The script:
 
-1. Pre-flight: on `RELEASE_BRANCH` (default `main`), clean tree, remote `REMOTE` (default `origin`) configured, `bun` present, [credentials](#credential-pre-flight) valid, interactive terminal (real release only).
+1. Pre-flight: on `RELEASE_BRANCH` (default `main`), clean tree, remote `REMOTE` (default `origin`) configured, `bun` present at version >= 1.4.0 (`bun.lock` is `lockfileVersion` 2, and Babel 8's parser worker needs `worker_threads` `SHARE_ENV`; see [Running tests](./DEVELOPER_NOTES.md#running-tests)), [credentials](#credential-pre-flight) valid, interactive terminal (real release only).
 2. [Bumps](#bump-tool) the version, which runs test and lint through the `preversion` hook.
 3. Runs `make build`. If the build modifies tracked files other than `package.json`, it reverts the bump and aborts.
 4. Commits the bump (message is the bare version) and creates the annotated tag `v<version>`.
@@ -53,7 +53,7 @@ The commit message is the bare version (for example `1.0.0-beta.3`, as in past r
 
 ## Build
 
-1. `bun install --frozen-lockfile`
+1. `bun install --frozen-lockfile` (Bun >= 1.4.0; see [Running tests](./DEVELOPER_NOTES.md#running-tests))
 2. `make build` (copies the config files from `src/` into `dist/`; also run automatically by `prepack`)
 3. `make qa` (runs the unit test and lint; writes reports under `qa/`, which is git-ignored)
 
