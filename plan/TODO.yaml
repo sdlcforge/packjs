@@ -35,6 +35,7 @@ phases:
           path: phase-01-babel-8-migration/003-docs-and-changelog.md
           done: false
           tier: sonnet-med
+          digest: 'Wrote the 2.0.0 docs: README Requirements section, new CHANGELOG.md (2.0.0 dated 2026-10-11), DEVELOPER_NOTES Bun >= 1.4.0 and polyfill note, RELEASING changelog convention. Docs only.'
           git:
             branch: null
             commit: []
