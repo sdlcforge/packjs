@@ -27,7 +27,7 @@ phases:
           tier: sonnet-med
           digest: Added JSX, TSX and import-attribute fixtures and tests, a Makefile retrigger prerequisite for fixtures and a lint ignore for the import-attribute fixture. make test, lint and qa pass, and the npm pack/install check is green with only the expected @rollup/plugin-babel ^7 peer-override warning.
           git:
-            branch: null
+            branch: plan/babel-8-migration-01-002
             commit: []
             merge: null
         - number: 3
