@@ -5,6 +5,7 @@ phases:
     - number: 1
       slug: babel-8-migration
       title: Babel 8 Migration and 2.0.0 Release
+      diff_base: e61609776fc9ce310344fa247588698ecf002124
       tasks:
         - number: 1
           slug: migrate-deps-and-config
