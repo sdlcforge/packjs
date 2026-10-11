@@ -41,20 +41,27 @@ if (Object.keys(engineTargets).length > 0) {
 const pkgOverrides = (pkgJSON._sdlc && pkgJSON._sdlc.babel && pkgJSON._sdlc.babel['preset-env']) || {}
 Object.assign(presetEnvOptions, pkgOverrides)
 
+// Babel 8 no longer drops the JSX syntax plugin for '.ts' files, so with '@babel/preset-react' active a generic arrow
+// function (`<T>(x: T) => x`) in a '.ts' file is parsed as JSX and fails. Apply the JSX preset to everything except
+// '.ts', '.mts', and '.cts' ('.tsx' still gets it). The 'automatic' JSX runtime (Babel 8's default) is set explicitly.
+const jsxPreset = () => ({
+  overrides : [{ exclude : /\.[cm]?ts$/, presets : [['@babel/preset-react', { runtime : 'automatic' }]] }]
+})
+
 const babelPresets = [
   // in testing, we output each file, so we need to convert 'imports', in production, we let rollup handle the imports
   ['@babel/preset-env', presetEnvOptions],
-  '@babel/preset-react',
+  jsxPreset,
   // TypeScript support - Babel strips types without type checking, which is ideal for transpilation
   '@babel/preset-typescript'
 ]
 
 const babelPlugins = [
   '@babel/plugin-proposal-throw-expressions',
-  ['@babel/plugin-transform-runtime', // helps save on codesize by re-using injected helper code
-    { corejs : false, helpers : true, regenerator : true } // re corejs, see polyfill plugin below
-  ],
-  '@babel/plugin-syntax-import-assertions',
+  // helps save on codesize by re-using injected helper code; Babel 8 removed the 'corejs', 'helpers', and 'regenerator'
+  // options (helpers are always imported from @babel/runtime and there's no polyfilling here)
+  '@babel/plugin-transform-runtime',
+  // note: import attributes ('with') parse by default in Babel 8, so no import-assertions syntax plugin is needed
   'inline-json-import'
 ]
 

@@ -12,11 +12,19 @@ const testInput = path.resolve(__dirname, 'throw-expression.mjs')
 const tsTestInput = path.resolve(__dirname, 'typescript-features.ts')
 const mixedTestInput = path.resolve(__dirname, 'mixed-entry.mjs')
 
+const jsxTestInput = path.resolve(__dirname, 'jsx-features.jsx')
+const tsxTestInput = path.resolve(__dirname, 'tsx-features.tsx')
+const importAttrTestInput = path.resolve(__dirname, 'import-attributes.mjs')
+
 const testStagingPath = path.resolve(__dirname, '..', '..', 'test-staging')
 
 const testOutputPath = path.resolve(testStagingPath, 'test-output.cjs')
 const tsTestOutputPath = path.resolve(testStagingPath, 'ts-test-output.cjs')
 const mixedTestOutputPath = path.resolve(testStagingPath, 'mixed-test-output.cjs')
+
+const jsxTestOutputPath = path.resolve(testStagingPath, 'jsx-test-output.cjs')
+const tsxTestOutputPath = path.resolve(testStagingPath, 'tsx-test-output.cjs')
+const importAttrTestOutputPath = path.resolve(testStagingPath, 'import-attr-test-output.cjs')
 
 const testOutput = {
   file          : testOutputPath,
@@ -215,6 +223,75 @@ loadConfigFile(configFile, { input : mixedTestInput, output : mixedTestOutput })
         process.exit(1)
       }
     })
+  })
+
+// JSX / TSX tests; 'react' is not installed here, so the automatic-runtime imports are declared external
+const reactExternal = 'react/jsx-runtime,react/jsx-dev-runtime'
+
+const jsxOutputOf = outputPath => ({ file : outputPath, format : 'cjs', generatedCode : 'es2015', sourcemap : false })
+
+async function buildOutput(input, outputPath, extra = {}) {
+  const { options, warnings } = await loadConfigFile(configFile, { input, output : jsxOutputOf(outputPath), ...extra })
+  warnings.flush()
+  for (const opts of options) {
+    const bundle = await rollup.rollup(opts)
+    await Promise.all(opts.output.map(bundle.write))
+  }
+  return readFileSync(outputPath, { encoding : 'utf8' })
+}
+
+function checkJsxOutput(label, contents) {
+  process.stdout.write(label + ': ')
+  const usesAutomaticRuntime = /react\/jsx(-dev)?-runtime/.test(contents)
+  if (usesAutomaticRuntime && !contents.includes('createElement')) {
+    process.stdout.write('PASSED\n')
+  }
+  else {
+    process.stdout.write('FAILED (expected automatic JSX runtime, no createElement)\n')
+    process.exit(1)
+  }
+}
+
+buildOutput(jsxTestInput, jsxTestOutputPath, { external : reactExternal })
+  .then(contents => checkJsxOutput('JSX uses automatic runtime', contents))
+  .catch(e => {
+    process.stdout.write('JSX uses automatic runtime: FAILED (error: ' + e.message + ')\n')
+    process.exit(1)
+  })
+
+buildOutput(tsxTestInput, tsxTestOutputPath, { external : reactExternal })
+  .then(contents => {
+    checkJsxOutput('TSX builds with automatic runtime', contents)
+    process.stdout.write('TSX types stripped: ')
+    if (contents.includes('GreetingProps') || contents.match(/:\s*string/)) {
+      process.stdout.write('FAILED (TypeScript syntax found in output)\n')
+      process.exit(1)
+    }
+    process.stdout.write('PASSED\n')
+  })
+  .catch(e => {
+    process.stdout.write('TSX builds with automatic runtime: FAILED (error: ' + e.message + ')\n')
+    process.exit(1)
+  })
+
+// Import attributes test
+buildOutput(importAttrTestInput, importAttrTestOutputPath)
+  .then(contents => {
+    process.stdout.write("Import attributes ('with { type: json }') inlined JSON: ")
+    delete require.cache[require.resolve(importAttrTestOutputPath)]
+    const { testImportAttributes } = require(importAttrTestOutputPath)
+    const imported = testImportAttributes()
+    if (imported.answer === 42 && imported.label === 'inlined-json-marker' && !contents.includes('data.json')) {
+      process.stdout.write('PASSED\n')
+    }
+    else {
+      process.stdout.write('FAILED (JSON not inlined)\n')
+      process.exit(1)
+    }
+  })
+  .catch(e => {
+    process.stdout.write("Import attributes ('with { type: json }') inlined JSON: FAILED (error: " + e.message + ')\n')
+    process.exit(1)
   })
 
 // TEST 9: shared babel config loads when there is no package.json above cwd
