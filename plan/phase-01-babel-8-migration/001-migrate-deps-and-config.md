@@ -29,3 +29,10 @@ Move packjs to Babel 8 with the automatic JSX runtime. Touches `package.json`, `
 ## Metadata
 
 architectural_impact: false
+
+## Status
+
+- Outcome: succeeded (2026-10-11). Bun 1.4.3, Node v26.5.0.
+- Validation: package.json has Babel 8 ranges, engines field, no import-assertions plugin; stale-option grep matches comments only; `make test` passes (all rollup tests); `make build` succeeds, `dist/` contains `jsxPreset`.
+- Engines verified via `npm view`: cli, core, throw-expressions, transform-runtime, preset-env, preset-react, preset-typescript declare `^22.18.0 || >=24.11.0`; `@babel/runtime` and `babel-plugin-transform-import-meta` declare none.
+- Files: `package.json`, `bun.lock`, `src/babel/babel-shared.config.cjs`, `src/test/typescript-features.ts`.
