@@ -5,4 +5,14 @@ phases:
     - number: 1
       slug: babel-8-migration
       title: Babel 8 Migration and 2.0.0 Release
-      tasks: []
+      tasks:
+        - number: 1
+          slug: migrate-deps-and-config
+          title: Migrate Dependencies and Babel Config to Babel 8
+          path: phase-01-babel-8-migration/001-migrate-deps-and-config.md
+          done: false
+          tier: sonnet-med
+          git:
+            branch: null
+            commit: []
+            merge: null
