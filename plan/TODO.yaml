@@ -15,7 +15,7 @@ phases:
           tier: sonnet-med
           digest: Migrated deps to Babel 8 with an engines field, removed the import-assertions plugin, and used a plain @babel/plugin-transform-runtime. preset-react is applied through an override excluding .ts/.mts/.cts with the automatic runtime. Added an identityArrow generic arrow regression case to src/test/typescript-features.ts. Lockfile regenerated; make test and make build pass on Bun 1.4.3.
           git:
-            branch: null
+            branch: plan/babel-8-migration-01-001
             commit: []
             merge: null
         - number: 2
