@@ -30,7 +30,7 @@ phases:
             branch: plan/babel-8-migration-01-002
             commit:
                 - 3bd0b79
-            merge: null
+            merge: 78ebeeddce624665bee2217b20bc3a2b246a7647
         - number: 3
           slug: docs-and-changelog
           title: Write README Notes, CHANGELOG, and Update Developer and Releasing Docs
