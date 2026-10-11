@@ -14,6 +14,14 @@ npm i @sdlcforge/packjs
 npx rollup $(npm explore @sdlcforge/packjs -- pwd)/dist/rollup/rollup.config.mjs
 ```
 
+## Requirements
+
+- **Node** `^22.18.0 || >=24.11.0` (the Babel 8 floor). Node 20 and Node 22 older than 22.18 are not supported.
+- **React 17 or newer** for JSX consumers. JSX is compiled with the automatic runtime, which imports from `react/jsx-runtime`.
+- **Targets.** Packages that declare no `engines` (and no browserslist) now get Babel 8's default targets, which transpile far less than before. Declare `engines` to target older runtimes.
+- **Import attributes** (`with { type: 'json' }`) are supported. The legacy `assert` keyword is not.
+- **Peer warning.** `@rollup/plugin-babel` ^7 declares a peer range for `@babel/core` that does not yet include Babel 8, so installs print a peer dependency warning. It is expected and harmless.
+
 ## Usage
 
 ### Polyfills

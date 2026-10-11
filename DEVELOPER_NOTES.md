@@ -1,8 +1,12 @@
 # Developer Notes
 
+## Running tests
+
+Tests require Bun >= 1.4.0. Babel 8's parser worker needs `worker_threads.SHARE_ENV`, which Bun 1.3.x lacks; on 1.3.x the tests fail and then hang.
+
 ## Policy configuration notes
 
-As noted in the [README.md polyfilles section](./README.md#polyfills), we were unable to find a configuration that actually optimized polyfills. Polyfills were included for both unused and unnecessary functions (that were natively supported in the targets). Hopefully the situation will be improved in Babel 8. To document what we tried:
+As noted in the [README.md polyfilles section](./README.md#polyfills), we were unable to find a configuration that actually optimized polyfills. Polyfills were included for both unused and unnecessary functions (that were natively supported in the targets). Babel 8 did not change this, and it removed the `@babel/plugin-transform-runtime` `corejs`, `helpers`, and `regenerator` options, so the attempts listed below no longer apply as written (they are kept as a record of what was tried on Babel 7):
 
 - if 'core-js' is found in the target package's runtime dependencies, we tried:
   - setting '[@babel/plugin-transform-runtime](https://babeljs.io/docs/babel-plugin-transform-runtime)' configuration `corejs` to the discovered version,
