@@ -1,14 +1,5 @@
 version: 2
 items:
-    - title: Strengthen TSX types-stripped test
-      id: MCMF
-      date: "2026-10-11"
-      tags:
-        - type:optimization
-        - priority:low
-        - effort:small
-        - plan/phase:babel-8-migration
-      text: In src/test/rollup.test.js (~lines 252-292) the TSX "types stripped" check looks for GreetingProps or /:\s*string/ in terser-minified output and passes in nearly every case. Optionally assert the output has no `interface` token, execute the built TSX output with a stub react/jsx-runtime, and add a generic-arrow-in-.tsx case (parses as JSX, a separate path from the .ts regression). Agent-authored review finding.
     - title: Review refreshed lockfile dependencies
       id: lK34
       date: "2026-10-11"
@@ -23,4 +14,9 @@ closed:
       title: RELEASING.md lacks Bun >= 1.4.0 minimum
       disposition: promoted
       ref: xpgB
+      date: "2026-10-11"
+    - id: MCMF
+      title: Strengthen TSX types-stripped test
+      disposition: promoted
+      ref: MCMF
       date: "2026-10-11"
