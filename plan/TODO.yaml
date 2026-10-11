@@ -40,7 +40,7 @@ phases:
             branch: plan/babel-8-migration-01-003
             commit:
                 - 5882c60
-            merge: null
+            merge: 722b520bbc5730e9b3fff199c32c5c7c20e6c623
         - number: 4
           slug: release-2-0-0-dry-run
           title: Release 2.0.0 via Dry Run and User Handoff
