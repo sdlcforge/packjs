@@ -49,7 +49,7 @@ The commit message is the bare version (for example `1.0.0-beta.3`, as in past r
 
 ## Changelog
 
-None. The project keeps no changelog file; no entry is inserted.
+`CHANGELOG.md` ([Keep a Changelog](https://keepachangelog.com/) style) is hand-authored before the release, with an entry for the version being released. `scripts/release.sh` does not read or modify it, so update it and commit it before running the script.
 
 ## Build
 
