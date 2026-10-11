@@ -23,7 +23,7 @@ phases:
           slug: add-fixtures-and-verify
           title: Add JSX and Import-Attribute Fixtures and Run Full Verification
           path: phase-01-babel-8-migration/002-add-fixtures-and-verify.md
-          done: false
+          done: true
           tier: sonnet-med
           digest: Added JSX, TSX and import-attribute fixtures and tests, a Makefile retrigger prerequisite for fixtures and a lint ignore for the import-attribute fixture. make test, lint and qa pass, and the npm pack/install check is green with only the expected @rollup/plugin-babel ^7 peer-override warning.
           git:
