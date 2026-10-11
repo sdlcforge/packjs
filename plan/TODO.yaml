@@ -36,3 +36,13 @@ phases:
             branch: null
             commit: []
             merge: null
+        - number: 4
+          slug: release-2-0-0-dry-run
+          title: Release 2.0.0 via Dry Run and User Handoff
+          path: phase-01-babel-8-migration/004-release-2-0-0-dry-run.md
+          done: false
+          tier: sonnet-low
+          git:
+            branch: null
+            commit: []
+            merge: null
