@@ -1,14 +1,5 @@
 version: 2
-items:
-    - title: Review refreshed lockfile dependencies
-      id: lK34
-      date: "2026-10-11"
-      tags:
-        - type:security
-        - priority:medium
-        - effort:small
-        - plan/phase:babel-8-migration
-      text: 'bun.lock review notes: @babel/generator 8.0.6 pins pre-release @jridgewell/gen-mapping@0.4.0-beta.0; rollup moved 4.60.1 to 4.64.5 (within ^4.60.1) and adds optional native dependency @napi-rs/lzma-linux-x64-gnu@1.5.1 whose purpose is unverified; many transitive packages refreshed; @rollup/plugin-babel 7.1.0 keeps a nested Babel 7 chain beside Babel 8. Before release run bun install --frozen-lockfile and an audit, confirm the lzma optional dependency is intended, and optionally cap rollup. Agent-authored review finding.'
+items: []
 closed:
     - id: xpgB
       title: RELEASING.md lacks Bun >= 1.4.0 minimum
@@ -19,4 +10,9 @@ closed:
       title: Strengthen TSX types-stripped test
       disposition: promoted
       ref: MCMF
+      date: "2026-10-11"
+    - id: lK34
+      title: Review refreshed lockfile dependencies
+      disposition: promoted
+      ref: lK34
       date: "2026-10-11"
