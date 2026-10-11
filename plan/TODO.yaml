@@ -18,7 +18,7 @@ phases:
             branch: plan/babel-8-migration-01-001
             commit:
                 - d8bc158
-            merge: null
+            merge: e26489234ce99a67717663595e9eba935d18a31a
         - number: 2
           slug: add-fixtures-and-verify
           title: Add JSX and Import-Attribute Fixtures and Run Full Verification
