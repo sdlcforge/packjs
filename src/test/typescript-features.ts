@@ -12,6 +12,9 @@ function identity<T>(value: T): T {
   return value;
 }
 
+// Generic arrow function: in a '.ts' file '<T>(' must not be parsed as JSX
+const identityArrow = <T>(value: T): T => value;
+
 // Function with type annotations
 function greet(user: User, status: Status): string {
   return `Hello, ${user.name}! You are ${status}.`;
@@ -39,7 +42,7 @@ function testTypescript(): { success: boolean; results: string[] } {
   results.push(greet(user, 'active'));
 
   // Test generics
-  const num = identity<number>(42);
+  const num = identityArrow<number>(42);
   const str = identity<string>('hello');
   results.push(`identity number: ${num}, string: ${str}`);
 
