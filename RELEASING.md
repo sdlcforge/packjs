@@ -8,11 +8,17 @@ This procedure is written primarily for agents (Flow's release skills read it by
 
 ## Bump tool
 
-Bun has no `npm version` equivalent that skips the git tag: `bun pm version` always creates a git tag and has no documented opt-out. The bump is therefore manual:
+The release procedure takes `<new_version>` as input and bumps with npm:
 
-1. Run `make test && make lint`; the bump must not proceed if either fails.
-2. Set the `version` field in `package.json` to `<new_version>`.
-3. Commit with the bare version as the message. Past releases (for example `1.0.0-beta.2`) are a bump commit whose message is the bare version.
+```sh
+npm version <new_version> --no-git-tag-version
+```
+
+This sets the `version` field in `package.json`; no manual edit is needed. The `preversion` script in `package.json` (`make test && make lint`) gates the bump, so `npm version` fails if either check fails.
+
+npm is used only for `npm version`. Bun has no tag-free equivalent: `bun pm version` always creates a git tag. `bun.lock` does not record the root version, so only `package.json` changes.
+
+Commit the change with the bare version as the message (for example `1.0.0-beta.2`, as in past releases).
 
 The tag is created separately in the [tag push](#tag-push) step.
 
@@ -61,7 +67,7 @@ On failure, the user authenticates in their own terminal (`npm login`, which wri
 
 ## Open questions
 
-- The history shows releases made with an external tool (`liq`: "Merging auto-generated release branch", a QA-files commit and a removal commit around each bump). This repository does not document or configure that tool, so this procedure uses a manual version bump. Confirm the intended tool.
+- The history shows releases made with an external tool (`liq`: "Merging auto-generated release branch", a QA-files commit and a removal commit around each bump). This repository does not document or configure that tool, so this procedure uses `npm version` for the bump. Confirm the intended tool.
 - Confirm that `bun publish` (and the `--access public` and `--tag beta` choices above) is the actual publish path; no publish workflow, CI configuration, or `publishConfig` exists in the repository.
 - Confirm whether `qa/` reports should be committed per release as past releases did, or stay git-ignored.
 - Confirm the release branch convention; the default branch is `main`.
